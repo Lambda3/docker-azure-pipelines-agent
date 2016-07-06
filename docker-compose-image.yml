@@ -1,9 +1,7 @@
 version: '2'
 services:
   agent:
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    image: giggio/vsts-agent
     environment:
       AGENT_PAT:
       AGENT_POOL:
