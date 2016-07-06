@@ -1,0 +1,12 @@
+version: '2'
+services:
+  agent:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      AGENT_PAT:
+      AGENT_POOL:
+      VS_TENANT:
+    stdin_open: true
+    tty: true
