@@ -19,9 +19,9 @@ WORKDIR /agent
 RUN curl -sOSL https://github.com/Microsoft/vsts-agent/releases/download/v2.102.1/vsts-agent-ubuntu.14.04-x64-2.102.1.tar.gz && \
     tar xzf /agent/vsts-agent-ubuntu.14.04-x64-2.102.1.tar.gz && \
     rm /agent/vsts-agent-ubuntu.14.04-x64-2.102.1.tar.gz
-COPY configureAndRun.sh /agent/
+COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
 USER root
-RUN chmod +x configureAndRun.sh && \
-    chown agentuser:agentuser configureAndRun.sh
+RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh && \
+    chown agentuser:agentuser configureAgent.sh runAgent.sh configureAndRun.sh
 USER agentuser
 CMD [ "/agent/configureAndRun.sh" ]
