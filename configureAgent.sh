@@ -10,8 +10,12 @@ if [ -z $AGENT_PAT ]; then
   exit 2
 fi
 if [ ! -f $DIR/.credentials ]; then
-  $DIR/bin/Agent.Listener configure --url https://$VS_TENANT.visualstudio.com --pool $AGENT_POOL --auth PAT --token $AGENT_PAT --agent $(hostname) --unattended
+  vs_tenant=$VS_TENANT
+  agent_pool=$AGENT_POOL
+  agent_pat=$AGENT_PAT
+  unset AGENT_PAT
+  unset AGENT_POOL
+  unset VS_TENANT
+  $DIR/bin/Agent.Listener configure --url https://$vs_tenant.visualstudio.com --pool $agent_pool --auth PAT --token $agent_pat --agent $(hostname) --unattended
+  check $?
 fi
-unset AGENT_PAT
-unset AGENT_POOL
-unset VS_TENANT
