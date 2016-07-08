@@ -8,7 +8,33 @@ This repository contains `Dockerfile` definitions for [giggio/vsts-agent](https:
 
 ## Supported tags
 
--       [`latest` (*Dockerfile*)](https://github.com/giggio/docker-vsts-agent/blob/master/Dockerfile)
+- [`latest` (*agent/Dockerfile*)](https://github.com/giggio/docker-vsts-agent/blob/master/agent/Dockerfile)
+- [`docker` (*agent-docker/Dockerfile*)](https://github.com/giggio/docker-vsts-agent/blob/master/agent-docker/Dockerfile)
+
+## Configuration
+
+For `latest`, you need to set these environment variables:
+* `AGENT_PAT` - The personal access token from VSTS. Required.
+* `VS_TENANT` - The VSTS tenant, a.k.a. the value that goes before .visualstudio.com, i.e., on foo.visualstudio.com, should be `foo`. Required.
+* `AGENT_POOL` - The agent pool. Optional. Default value: `Default`
+
+For `docker`, you need to set these additional variables:
+* `DOCKER_USERNAME` - Your docker user name. Required.
+* `DOCKER_PASSWORD` - Your docker password. Required.
+
+## Running
+
+On Windows, use Docker for Windows and run, on PowerShell:
+
+````powershell
+docker run --name vsts-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$env:AGENT_PAT -e DOCKER_USERNAME=$env:DOCKER_USERNAME -e DOCKER_PASSWORD=$env:DOCKER_PASSWORD --rm --volume=/var/run/docker.sock:/var/run/docker.sock giggio/vsts-agent:docker
+````
+
+On a Mac, use Docker for Mac, or directy on Linux, run in bash:
+
+````bash
+docker run --name vsts-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD --rm --volume=/var/run/docker.sock:/var/run/docker.sock giggio/vsts-agent:docker
+````
 
 ## Maintainers
 
