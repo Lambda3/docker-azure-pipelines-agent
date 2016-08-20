@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 RUN apt-get update && \
-    apt-get install -y software-properties-common curl unzip vim apt-transport-https libunwind8 libcurl3 sudo && \
+    apt-get install -y software-properties-common curl unzip vim apt-transport-https libunwind8 libcurl3 sudo iputils-ping && \
     apt-add-repository ppa:git-core/ppa && \
     apt-get update && \
     apt-get install -y git
@@ -15,9 +15,9 @@ RUN mkdir /agent
 RUN chown -R agentuser:agentuser /agent
 USER agentuser
 WORKDIR /agent
-RUN curl -sOSL https://github.com/Microsoft/vsts-agent/releases/download/v2.104.2/vsts-agent-ubuntu.16.04-x64-2.104.2.tar.gz && \
-    tar xzf /agent/vsts-agent-ubuntu.16.04-x64-2.104.2.tar.gz && \
-    rm /agent/vsts-agent-ubuntu.16.04-x64-2.104.2.tar.gz
+RUN curl -sOSL https://github.com/Microsoft/vsts-agent/releases/download/v2.105.1/vsts-agent-ubuntu.16.04-x64-2.105.1.tar.gz && \
+    tar xzf /agent/vsts-agent-ubuntu.16.04-x64-2.105.1.tar.gz && \
+    rm /agent/vsts-agent-ubuntu.16.04-x64-2.105.1.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
 USER root
 RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh && \
