@@ -15,7 +15,7 @@ RUN mkdir /agent
 RUN chown -R agentuser:agentuser /agent
 USER agentuser
 WORKDIR /agent
-RUN curl -sOSL https://github.com/Microsoft/vsts-agent/releases/download/v2.105.1/vsts-agent-ubuntu.16.04-x64-2.105.3.tar.gz && \
+RUN curl -sOSL https://github.com/Microsoft/vsts-agent/releases/download/v2.105.3/vsts-agent-ubuntu.16.04-x64-2.105.3.tar.gz && \
     tar xzf /agent/vsts-agent-ubuntu.16.04-x64-2.105.3.tar.gz && \
     rm /agent/vsts-agent-ubuntu.16.04-x64-2.105.3.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
