@@ -1,4 +1,4 @@
-FROM giggio/vsts-agent
+FROM lambda3/vsts-agent
 
 USER root
 RUN apt-get -y install expect expect-dev

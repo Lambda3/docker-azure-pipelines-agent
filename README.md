@@ -1,15 +1,15 @@
 VSTS Agent Docker Image
 ====================
 
-This repository contains `Dockerfile` definitions for [giggio/vsts-agent](https://github.com/giggio/docker-vsts-agent) Docker images.
+This repository contains `Dockerfile` definitions for [lambda3/vsts-agent](https://github.com/lambda3/docker-vsts-agent) Docker images.
 
-[![Downloads from Docker Hub](https://img.shields.io/docker/pulls/giggio/vsts-agent.svg)](https://registry.hub.docker.com/u/giggio/vsts-agent)
-[![Stars on Docker Hub](https://img.shields.io/docker/stars/giggio/vsts-agent.svg)](https://registry.hub.docker.com/u/giggio/vsts-agent)
+[![Downloads from Docker Hub](https://img.shields.io/docker/pulls/lambda3/vsts-agent.svg)](https://registry.hub.docker.com/u/lambda3/vsts-agent)
+[![Stars on Docker Hub](https://img.shields.io/docker/stars/lambda3/vsts-agent.svg)](https://registry.hub.docker.com/u/lambda3/vsts-agent)
 
 ## Supported tags
 
-- [`latest` (*agent/Dockerfile*)](https://github.com/giggio/docker-vsts-agent/blob/master/agent/Dockerfile)
-- [`docker` (*agent-docker/Dockerfile*)](https://github.com/giggio/docker-vsts-agent/blob/master/agent-docker/Dockerfile)
+- [`latest` (*agent/Dockerfile*)](https://github.com/lambda3/docker-vsts-agent/blob/master/agent/Dockerfile)
+- [`docker` (*agent-docker/Dockerfile*)](https://github.com/lambda3/docker-vsts-agent/blob/master/agent-docker/Dockerfile)
 
 ## Configuration
 
@@ -27,13 +27,13 @@ For `docker`, you need to set these additional variables:
 On Windows, use Docker for Windows and run, on PowerShell:
 
 ````powershell
-docker run --name vsts-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$env:AGENT_PAT -e DOCKER_USERNAME=$env:DOCKER_USERNAME -e DOCKER_PASSWORD=$env:DOCKER_PASSWORD --rm --volume=/var/run/docker.sock:/var/run/docker.sock giggio/vsts-agent:docker
+docker run --name vsts-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$env:AGENT_PAT -e DOCKER_USERNAME=$env:DOCKER_USERNAME -e DOCKER_PASSWORD=$env:DOCKER_PASSWORD --rm --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/vsts-agent:docker
 ````
 
 On a Mac, use Docker for Mac, or directy on Linux, run in bash:
 
 ````bash
-docker run --name vsts-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD --rm --volume=/var/run/docker.sock:/var/run/docker.sock giggio/vsts-agent:docker
+docker run --name vsts-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD --rm --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/vsts-agent:docker
 ````
 
 ## Maintainers
@@ -43,7 +43,7 @@ docker run --name vsts-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$AGENT
 ## License
 
 This software is open source, licensed under the Apache License, Version 2.0.
-See [LICENSE.txt](https://github.com/giggio/vsts-agent/blob/master/LICENSE.txt) for details.
+See [LICENSE.txt](https://github.com/lambda3/vsts-agent/blob/master/LICENSE.txt) for details.
 Check out the terms of the license before you contribute, fork, copy or do anything
 with the code. If you decide to contribute you agree to grant copyright of all your contribution to this project, and agree to
 mention clearly if do not agree to these terms. Your work will be licensed with the project at Apache V2, along the rest of the code.
