@@ -4,7 +4,7 @@ VSTS Agent Docker Image
 This repository contains `Dockerfile` definitions for [lambda3/vsts-agent](https://github.com/lambda3/docker-vsts-agent) Docker images.
 
 [![Downloads from Docker Hub](https://img.shields.io/docker/pulls/lambda3/vsts-agent.svg)](https://registry.hub.docker.com/u/lambda3/vsts-agent)
-[![Stars on Docker Hub](https://img.shields.io/docker/stars/lambda3/vsts-agent.svg)](https://registry.hub.docker.com/u/lambda3/vsts-agent)
+[![Stars on Docker Hub](https://img.shields.io/docker/stars/lambda3/vsts-agent.svg)](https://registry.hub.docker.com/u/lambda3/vsts-agent) [![](https://images.microbadger.com/badges/image/lambda3/vsts-agent.svg)](https://microbadger.com/images/lambda3/vsts-agent "Get your own image badge on microbadger.com")
 
 ## Supported tags
 
@@ -47,3 +47,4 @@ See [LICENSE.txt](https://github.com/lambda3/vsts-agent/blob/master/LICENSE.txt)
 Check out the terms of the license before you contribute, fork, copy or do anything
 with the code. If you decide to contribute you agree to grant copyright of all your contribution to this project, and agree to
 mention clearly if do not agree to these terms. Your work will be licensed with the project at Apache V2, along the rest of the code.
+ 
