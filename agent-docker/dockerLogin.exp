@@ -1,8 +1,0 @@
-#!/usr/bin/expect -f
-
-set timeout -1
-spawn docker login -u $env(DOCKER_USERNAME)
-match_max 100000
-expect -exact "Password: "
-send -- "$env(DOCKER_PASSWORD)\r"
-expect eof

@@ -9,7 +9,7 @@ if [ -z $DOCKER_PASSWORD ]; then
   exit 4
 fi
 sudo chown agentuser:agentuser /var/run/docker.sock
-if [ ! -f $HOME/.docker/config.json ]; then /agent/dockerLogin.exp; fi
+if [ ! -f $HOME/.docker/config.json ]; then sudo docker login -u DOCKER_USERNAME -p DOCKER_PASSWORD; fi
 unset DOCKER_USERNAME
 unset DOCKER_PASSWORD
 export DOCKER_VERSION=$(docker --version)
