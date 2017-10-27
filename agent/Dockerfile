@@ -11,13 +11,24 @@ RUN echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-releas
 RUN adduser --disabled-password --gecos '' agentuser && \
     adduser agentuser sudo && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+# az cli:
+RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | \
+    tee /etc/apt/sources.list.d/azure-cli.list && \
+    apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893 && \
+    apt-get update && \
+    apt-get install -y azure-cli
+# pwsh:
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/microsoft.list && \
+    apt-get update && \
+    apt-get install -y powershell
 RUN mkdir /agent
 RUN chown -R agentuser:agentuser /agent
 USER agentuser
 WORKDIR /agent
-RUN curl -sOSL https://github.com/Microsoft/vsts-agent/releases/download/v2.123.0/vsts-agent-ubuntu.16.04-x64-2.123.0.tar.gz && \
-    tar xzf /agent/vsts-agent-ubuntu.16.04-x64-2.123.0.tar.gz && \
-    rm /agent/vsts-agent-ubuntu.16.04-x64-2.123.0.tar.gz
+RUN curl -sOSL https://github.com/Microsoft/vsts-agent/releases/download/v2.124.0/vsts-agent-ubuntu.16.04-x64-2.124.0.tar.gz && \
+    tar xzf /agent/vsts-agent-ubuntu.16.04-x64-2.124.0.tar.gz && \
+    rm /agent/vsts-agent-ubuntu.16.04-x64-2.124.0.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
 USER root
 RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh && \
