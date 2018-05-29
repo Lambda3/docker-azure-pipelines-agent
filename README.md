@@ -38,6 +38,11 @@ On a Mac, use Docker for Mac, or directy on Linux, run in bash:
 docker run --name vsts-agent -ti -e VS_TENANT=$VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD -e DOCKER_SERVER=$DOCKER_SERVER --rm --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/vsts-agent:docker
 ````
 
+If you build using Docker containers, be careful with volume mounts, as they
+will be mounted on the Docker host, not on the agent's file system. For that to
+work as expected mount `/agent/_works` from the host to the agent container,
+adding to docker run `-v /agent/_works:/agent/_works`.
+
 ## Maintainers
 
 * [Giovanni Bassi](http://blog.lambda3.com.br/L3/giovannibassi/), aka Giggio, [Lambda3](http://www.lambda3.com.br), [@giovannibassi](https://twitter.com/giovannibassi)

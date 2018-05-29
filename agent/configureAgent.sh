@@ -17,6 +17,7 @@ if [ ! -f $DIR/.credentials ]; then
   unset AGENT_POOL
   unset VS_TENANT
   export DOTNET_VERSION=$(dotnet --version)
-  $DIR/bin/Agent.Listener configure --url https://$vs_tenant.visualstudio.com --pool $agent_pool --auth PAT --token $agent_pat --agent $(hostname) --unattended
+  work_dir="$DIR/_works/$(hostname)"
+  $DIR/bin/Agent.Listener configure --url https://$vs_tenant.visualstudio.com --pool $agent_pool --auth PAT --token $agent_pat --agent $(hostname) --work $work_dir --unattended
   check $?
 fi
