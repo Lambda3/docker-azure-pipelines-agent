@@ -14,6 +14,7 @@ This repository contains `Dockerfile` definitions for [lambda3/vsts-agent](https
 ## Configuration
 
 For `latest`, you need to set these environment variables:
+
 * `AGENT_PAT` - The personal access token from VSTS. Required.
 * `VS_TENANT` - The VSTS tenant, a.k.a. the value that goes before .visualstudio.com, i.e., on foo.visualstudio.com, should be `foo`. Required.
 * `AGENT_POOL` - The agent pool. Optional. Default value: `Default`
@@ -47,4 +48,3 @@ See [LICENSE.txt](https://github.com/lambda3/vsts-agent/blob/master/LICENSE.txt)
 Check out the terms of the license before you contribute, fork, copy or do anything
 with the code. If you decide to contribute you agree to grant copyright of all your contribution to this project, and agree to
 mention clearly if do not agree to these terms. Your work will be licensed with the project at Apache V2, along the rest of the code.
- 
