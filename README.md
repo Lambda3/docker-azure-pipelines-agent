@@ -22,19 +22,20 @@ For `latest`, you need to set these environment variables:
 For `docker`, you need to set these additional variables:
 * `DOCKER_USERNAME` - Your docker user name. Required.
 * `DOCKER_PASSWORD` - Your docker password. Required.
+* `DOCKER_SERVER` - Your docker registries, defaults to Docker's default public registry. Optional.
 
 ## Running
 
 On Windows, use Docker for Windows and run, on PowerShell:
 
 ````powershell
-docker run --name vsts-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$env:AGENT_PAT -e DOCKER_USERNAME=$env:DOCKER_USERNAME -e DOCKER_PASSWORD=$env:DOCKER_PASSWORD --rm --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/vsts-agent:docker
+docker run --name vsts-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$env:AGENT_PAT -e DOCKER_USERNAME=$env:DOCKER_USERNAME -e DOCKER_PASSWORD=$env:DOCKER_PASSWORD -e DOCKER_SERVER=$env:DOCKER_SERVER --rm --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/vsts-agent:docker
 ````
 
 On a Mac, use Docker for Mac, or directy on Linux, run in bash:
 
 ````bash
-docker run --name vsts-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD --rm --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/vsts-agent:docker
+docker run --name vsts-agent -ti -e VS_TENANT=$VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD -e DOCKER_SERVER=$DOCKER_SERVER --rm --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/vsts-agent:docker
 ````
 
 ## Maintainers

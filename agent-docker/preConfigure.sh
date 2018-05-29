@@ -9,7 +9,16 @@ if [ -z $DOCKER_PASSWORD ]; then
   exit 4
 fi
 sudo chown agentuser:agentuser /var/run/docker.sock
-if [ ! -f $HOME/.docker/config.json ]; then sudo docker login -u DOCKER_USERNAME -p DOCKER_PASSWORD; fi
+if [ ! -f $HOME/.docker/config.json ]; then
+  if [ -z $DOCKER_SERVER ]; then
+    echo 'Login in to docker.com'
+    sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  else
+    echo "Login in to $DOCKER_SERVER"
+    sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_SERVER
+  fi
+  sudo chown -R agentuser:agentuser /home/agentuser/.docker/
+fi
 unset DOCKER_USERNAME
 unset DOCKER_PASSWORD
 export DOCKER_VERSION=$(docker --version)
