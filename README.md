@@ -20,9 +20,12 @@ For `latest`, you need to set these environment variables:
 * `AGENT_POOL` - The agent pool. Optional. Default value: `Default`
 
 For `docker`, you need to set these additional variables:
-* `DOCKER_USERNAME` - Your docker user name. Required.
-* `DOCKER_PASSWORD` - Your docker password. Required.
-* `DOCKER_SERVER` - Your docker registries, defaults to Docker's default public registry. Optional.
+* `DOCKER_USERNAME` - Your docker user name. Optional, no default.
+* `DOCKER_PASSWORD` - Your docker password. Optional, no default.
+* `DOCKER_SERVER` - Your docker registries, defaults to Docker's default public
+  registry. Optional.
+
+If you do not specify the Docker username and password the agent will not login.
 
 ## Running
 
