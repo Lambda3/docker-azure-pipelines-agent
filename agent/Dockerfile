@@ -10,8 +10,8 @@ RUN apt-get update && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb
 # netcore
-RUN apt-get update && apt-get install -y dotnet-sdk-2.1 && \
-    echo 'export PATH=$PATH:$HOME/.dotnet/tools' >> $HOME/.bashrc
+RUN apt-get update && apt-get install -y dotnet-sdk-2.1
+ENV PATH="${PATH}:/root/.dotnet/tools"
 # az cli:
 RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
     tee /etc/apt/sources.list.d/azure-cli.list && \
