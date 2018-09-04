@@ -20,6 +20,11 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb
     apt-get install -y azure-cli
 # pwsh:
 RUN apt-get install -y powershell-preview && ln /usr/bin/pwsh-preview /usr/bin/pwsh
+# nvm/node:
+RUN apt-get install -y build-essential libssl-dev
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm i 10" ]
+RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm alias default 10" ]
 WORKDIR /agent
 # agent:
 RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.139.1/vsts-agent-linux-x64-2.139.1.tar.gz && \
