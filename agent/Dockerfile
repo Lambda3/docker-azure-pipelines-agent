@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 # basics:
 RUN apt-get update && \
-    apt-get install -y libuuid1 libicu60 software-properties-common curl unzip vim apt-transport-https \
+    apt-get install -y iproute2 libuuid1 libicu60 software-properties-common curl unzip vim apt-transport-https \
     libunwind8 sudo iputils-ping wget && \
     apt-add-repository ppa:git-core/ppa && \
     apt-get update && \
