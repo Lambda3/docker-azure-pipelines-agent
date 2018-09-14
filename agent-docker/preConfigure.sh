@@ -16,8 +16,8 @@ if [ ! -f $HOME/.docker/config.json ] && [ ! -z $DOCKER_USERNAME ] && [ ! -z $DO
     echo "Login in to $DOCKER_SERVER"
     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_SERVER
   fi
-  unset DOCKER_USERNAME
-  unset DOCKER_PASSWORD
 fi
+unset DOCKER_USERNAME
+unset DOCKER_PASSWORD
 export DOCKER_VERSION=$(docker --version)
 export DOCKER_COMPOSE_VERSION=$(docker-compose --version)
