@@ -27,9 +27,9 @@ RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm i 10" ]
 RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm alias default 10" ]
 WORKDIR /agent
 # agent:
-RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.139.1/vsts-agent-linux-x64-2.139.1.tar.gz && \
-    tar xzf /agent/vsts-agent-linux-x64-2.139.1.tar.gz && \
-    rm /agent/vsts-agent-linux-x64-2.139.1.tar.gz
+RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.140.0/vsts-agent-linux-x64-2.140.0.tar.gz && \
+    tar xzf /agent/vsts-agent-linux-x64-2.140.0.tar.gz && \
+    rm /agent/vsts-agent-linux-x64-2.140.0.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
 RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh
 CMD [ "/agent/configureAndRun.sh" ]
