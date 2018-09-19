@@ -1,12 +1,15 @@
 FROM ubuntu:18.04
 # basics:
 RUN apt-get update && \
-    apt-get install -y iproute2 libuuid1 libicu60 software-properties-common curl unzip vim apt-transport-https \
-    libunwind8 sudo iputils-ping wget && \
+    apt-get install -y software-properties-common apt-transport-https && \
+    apt-get upgrade -y && \
     apt-add-repository ppa:git-core/ppa && \
     apt-get update && \
-    apt-get install -y git && \
-    wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
+    apt-get install -y git iproute2 libuuid1 libicu60 wget curl zip unzip \
+    vim  libunwind8 sudo iputils-ping gdebi-core python python-pip python3 python3-pip \
+    build-essential libssl-dev
+# Microsoft keys:
+RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb
 # netcore
@@ -19,13 +22,31 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb
     apt-get update && \
     apt-get install -y azure-cli
 # pwsh:
-RUN apt-get install -y powershell-preview && ln /usr/bin/pwsh-preview /usr/bin/pwsh
-# nvm/node:
-RUN apt-get install -y build-essential libssl-dev
+RUN apt-get install -y powershell
+# nvm/node/yarn:
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash
+RUN apt-get install -y nodejs
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm i 10" ]
 RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm alias default 10" ]
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt-get update && apt-get -y --no-install-recommends install yarn
 WORKDIR /agent
+# chrome:
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
+    gdebi --non-interactive google-chrome-stable_current_amd64.deb && \
+    rm google-chrome-stable_current_amd64.deb
+# kubectl:
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
+    apt-get update && \
+    apt-get install -y kubectl
+# helm:
+RUN curl -sL https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+# terraform:
+RUN wget -q https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip && \
+    unzip -d /usr/local/bin/ terraform_0.11.8_linux_amd64.zip
 # agent:
 RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.140.0/vsts-agent-linux-x64-2.140.0.tar.gz && \
     tar xzf /agent/vsts-agent-linux-x64-2.140.0.tar.gz && \
