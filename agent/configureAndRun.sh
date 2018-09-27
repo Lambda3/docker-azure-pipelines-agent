@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap '{ pid=$(pgrep Agent.Listener); kill -2 $pid; while kill -0 $pid 2> /dev/null; do sleep 1; done; echo "Agent stopped."; exit 0; }' SIGTERM
+trap '{ pid=$(pgrep sleep); kill -2 $pid; while kill -0 $pid 2> /dev/null; do sleep 1; done; echo "Agent stopped."; exit 0; }' SIGTERM
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 check () {
@@ -25,5 +25,6 @@ ifRun postConfigure.sh
 echo Configuration done. Starting run for $(hostname)...
 ifRun preRun.sh
 . $DIR/runAgent.sh
+sleep infinity
 ifRun postRun.sh
 exit 0
