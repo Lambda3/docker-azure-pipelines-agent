@@ -8,6 +8,7 @@ if ! docker info | grep 'Docker for Windows' > /dev/null; then
     echo "Added $DOCKER_INTERNAL_IP to /etc/hosts as $DOCKER_INTERNAL_HOST"
   fi
 fi
+sudo chown agentuser:agentuser /var/run/docker.sock
 if [ ! -f $HOME/.docker/config.json ] && [ ! -z $DOCKER_USERNAME ] && [ ! -z $DOCKER_PASSWORD ]; then
   if [ -z $DOCKER_SERVER ]; then
     echo 'Login in to docker.com'
@@ -16,6 +17,7 @@ if [ ! -f $HOME/.docker/config.json ] && [ ! -z $DOCKER_USERNAME ] && [ ! -z $DO
     echo "Login in to $DOCKER_SERVER"
     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_SERVER
   fi
+  sudo chown -R agentuser:agentuser /home/agentuser/.docker/
 fi
 unset DOCKER_USERNAME
 unset DOCKER_PASSWORD

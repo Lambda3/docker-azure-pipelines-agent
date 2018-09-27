@@ -8,6 +8,10 @@ RUN apt-get update && \
     apt-get install -y git iproute2 libuuid1 libicu60 wget curl zip unzip \
     vim  libunwind8 sudo iputils-ping gdebi-core python python-pip python3 python3-pip \
     build-essential libssl-dev
+#users
+RUN adduser --disabled-password --gecos '' agentuser && \
+    adduser agentuser sudo && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 # Microsoft keys:
 RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
@@ -32,6 +36,10 @@ RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm alias default 10" ]
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update && apt-get -y --no-install-recommends install yarn
+#agent and user
+RUN mkdir /agent
+RUN chown -R agentuser:agentuser /agent
+USER agentuser
 WORKDIR /agent
 # chrome:
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
@@ -52,5 +60,8 @@ RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.140.0/vsts-agent-l
     tar xzf /agent/vsts-agent-linux-x64-2.140.0.tar.gz && \
     rm /agent/vsts-agent-linux-x64-2.140.0.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
-RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh
+USER root
+RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh && \
+    chown agentuser:agentuser configureAgent.sh runAgent.sh configureAndRun.sh
+USER agentuser
 CMD [ "/agent/configureAndRun.sh" ]
