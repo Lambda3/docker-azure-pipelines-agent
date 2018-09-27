@@ -54,9 +54,9 @@ RUN wget -q https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_lin
     unzip -d /usr/local/bin/ terraform_0.11.8_linux_amd64.zip && \
     rm terraform_0.11.8_linux_amd64.zip
 # agent:
-RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.140.0/vsts-agent-linux-x64-2.140.0.tar.gz && \
-    tar xzf /agent/vsts-agent-linux-x64-2.140.0.tar.gz && \
-    rm /agent/vsts-agent-linux-x64-2.140.0.tar.gz
+RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.141.0/vsts-agent-linux-x64-2.141.0.tar.gz && \
+    tar xzf /agent/vsts-agent-linux-x64-2.141.0.tar.gz && \
+    rm /agent/vsts-agent-linux-x64-2.141.0.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
 RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh && \
     chown agentuser:agentuser configureAgent.sh runAgent.sh configureAndRun.sh
