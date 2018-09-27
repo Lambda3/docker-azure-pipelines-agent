@@ -1,4 +1,4 @@
-FROM lambda3/vsts-agent
+FROM lambda3/azure-pipelines-agent
 
 USER root
 RUN curl -fsSL https://get.docker.com/ | sh

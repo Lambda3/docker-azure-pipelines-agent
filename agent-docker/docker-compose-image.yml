@@ -1,7 +1,7 @@
 version: '2'
 services:
   agent:
-    image: lambda3/vsts-agent:docker
+    image: lambda3/azure-pipelines-agent:docker
     environment:
       AGENT_PAT:
       AGENT_POOL:
