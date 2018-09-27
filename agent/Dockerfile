@@ -12,6 +12,8 @@ RUN apt-get update && \
 RUN adduser --disabled-password --gecos '' agentuser && \
     adduser agentuser sudo && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN mkdir /agent
+WORKDIR /agent
 # Microsoft keys:
 RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
@@ -36,11 +38,6 @@ RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm alias default 10" ]
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update && apt-get -y --no-install-recommends install yarn
-#agent and user
-RUN mkdir /agent
-RUN chown -R agentuser:agentuser /agent
-USER agentuser
-WORKDIR /agent
 # chrome:
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     gdebi --non-interactive google-chrome-stable_current_amd64.deb && \
@@ -54,14 +51,15 @@ RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add 
 RUN curl -sL https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
 # terraform:
 RUN wget -q https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip && \
-    unzip -d /usr/local/bin/ terraform_0.11.8_linux_amd64.zip
+    unzip -d /usr/local/bin/ terraform_0.11.8_linux_amd64.zip && \
+    rm terraform_0.11.8_linux_amd64.zip
 # agent:
 RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.140.0/vsts-agent-linux-x64-2.140.0.tar.gz && \
     tar xzf /agent/vsts-agent-linux-x64-2.140.0.tar.gz && \
     rm /agent/vsts-agent-linux-x64-2.140.0.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
-USER root
 RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh && \
     chown agentuser:agentuser configureAgent.sh runAgent.sh configureAndRun.sh
+RUN chown -R agentuser:agentuser /agent
 USER agentuser
 CMD [ "/agent/configureAndRun.sh" ]
