@@ -1,10 +1,12 @@
 #!/bin/bash
 
+set -eo pipefail
+
 if ! docker info | grep 'Docker for Windows' > /dev/null; then
   DOCKER_INTERNAL_HOST="host.docker.internal"
   if ! grep $DOCKER_INTERNAL_HOST /etc/hosts > /dev/null; then
     DOCKER_INTERNAL_IP=`/sbin/ip route | awk '/default/ { print $3 }' | awk '!seen[$0]++'`
-    echo -e "$DOCKER_INTERNAL_IP\t$DOCKER_INTERNAL_HOST" >> /etc/hosts
+    echo -e "$DOCKER_INTERNAL_IP\t$DOCKER_INTERNAL_HOST" | sudo tee --append /etc/hosts > /dev/null
     echo "Added $DOCKER_INTERNAL_IP to /etc/hosts as $DOCKER_INTERNAL_HOST"
   fi
 fi
