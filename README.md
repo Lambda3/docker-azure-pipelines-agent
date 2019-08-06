@@ -1,7 +1,9 @@
-Azure Pipelines Agent Docker Image
-====================
+# Azure Pipelines Agent Docker Image
 
-This repository contains `Dockerfile` definitions for [lambda3/azure-pipelines-agent](https://github.com/lambda3/docker-azure-pipelines-agent) Docker images.
+This repository contains `Dockerfile` definitions for
+[lambda3/azure-pipelines-agent](https://github.com/lambda3/docker-azure-pipelines-agent).
+
+It will not work with Azure DevOps Server.
 
 [![Downloads from Docker Hub](https://img.shields.io/docker/pulls/lambda3/azure-pipelines-agent.svg)](https://registry.hub.docker.com/u/lambda3/azure-pipelines-agent)
 [![Stars on Docker Hub](https://img.shields.io/docker/stars/lambda3/azure-pipelines-agent.svg)](https://registry.hub.docker.com/u/lambda3/azure-pipelines-agent) [![](https://images.microbadger.com/badges/image/lambda3/azure-pipelines-agent.svg)](https://microbadger.com/images/lambda3/azure-pipelines-agent "Get your own image badge on microbadger.com")
@@ -19,7 +21,9 @@ For `latest`, you need to set these environment variables:
 * `VS_TENANT` - The Azure Pipelines tenant, a.k.a. the value that goes before .visualstudio.com, i.e., on foo.visualstudio.com, should be `foo`. Required.
 * `AGENT_POOL` - The agent pool. Optional. Default value: `Default`
 
-For `docker`, you need to set these additional variables:
+For `docker`, you may have a predefined login using these additional variables,
+(but you should avoid it, see the disclaimer after the variables):
+
 * `DOCKER_USERNAME` - Your docker user name. Optional, no default.
 * `DOCKER_PASSWORD` - Your docker password. Optional, no default.
 * `DOCKER_SERVER` - Your docker registries, defaults to Docker's default public
@@ -27,28 +31,43 @@ For `docker`, you need to set these additional variables:
 
 If you do not specify the Docker username and password the agent will not login.
 
+**Disclaimer**: Setting the above variables will connect the agent permanently
+to a docker registry. Instead, you should use the
+[Docker Task](https://docs.microsoft.com/azure/devops/pipelines/tasks/build/docker)
+and with a
+[Docker registry service connection](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints#sep-docreg)
+provide the authentication. This will enable the agent to work with multiple
+registries and lower the risk of attack.
+
 ## Running
 
 On Windows, use Docker for Windows and run, on PowerShell:
 
 ````powershell
-docker run --name azure-pipelines-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$env:AGENT_PAT -e DOCKER_USERNAME=$env:DOCKER_USERNAME -e DOCKER_PASSWORD=$env:DOCKER_PASSWORD -e DOCKER_SERVER=$env:DOCKER_SERVER --rm --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/azure-pipelines-agent:docker
+docker run --name azure-pipelines-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$env:AGENT_PAT -e DOCKER_USERNAME=$env:DOCKER_USERNAME -e DOCKER_PASSWORD=$env:DOCKER_PASSWORD -e DOCKER_SERVER=$env:DOCKER_SERVER -d --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/azure-pipelines-agent:docker
 ````
 
-On a Mac, use Docker for Mac, or directy on Linux, run in bash:
+On a Mac, use Docker for Mac, or directly on Linux, run in bash:
 
 ````bash
-docker run --name azure-pipelines-agent -ti -e VS_TENANT=$VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD -e DOCKER_SERVER=$DOCKER_SERVER --rm --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/azure-pipelines-agent:docker
+docker run --name azure-pipelines-agent -ti -e VS_TENANT=$VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD -e DOCKER_SERVER=$DOCKER_SERVER -d --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/azure-pipelines-agent:docker
 ````
 
 If you build using Docker containers, be careful with volume mounts, as they
-will be mounted on the Docker host, not on the agent's file system. For that to
-work as expected mount `/agent/_works` from the host to the agent container,
-adding to docker run `-v /agent/_works:/agent/_works`, like so:
+will be mounted on the Docker host, not on the agent's file system.
+
+For the
+agent to work as expected mount `/agent/_works` from the host to the agent
+container, adding to docker run `-v /agent/_works:/agent/_works`, like so:
 
 ````bash
-docker run --name azure-pipelines-agent -ti -e VS_TENANT=$VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD -e DOCKER_SERVER=$DOCKER_SERVER --rm --volume=/var/run/docker.sock:/var/run/docker.sock -v /agent/_works:/agent/_works lambda3/azure-pipelines-agent:docker
+docker run --name azure-pipelines-agent -ti -e VS_TENANT=$VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD -e DOCKER_SERVER=$DOCKER_SERVER -d --volume=/var/run/docker.sock:/var/run/docker.sock -v /agent/_works:/agent/_works lambda3/azure-pipelines-agent:docker
 ````
+
+This will keep the agent staging directory (and other work directories)
+persistent across agent restarts. Also, it is recommended that you mount to a
+directory that is relative to this directory, like the staging directory, so
+when it is mounted on the host, it is also available for the agent.
 
 ## Maintainers
 

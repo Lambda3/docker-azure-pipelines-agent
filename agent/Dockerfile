@@ -19,7 +19,7 @@ RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsof
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb
 # netcore
-RUN apt-get update && apt-get install -y dotnet-sdk-2.1
+RUN apt-get update && apt-get install -y dotnet-sdk-2.1 dotnet-sdk-2.2
 ENV PATH="${PATH}:/home/agentuser/.dotnet/tools"
 # az cli:
 RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
@@ -30,11 +30,11 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb
 # pwsh:
 RUN apt-get install -y powershell
 # nvm/node/yarn:
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
 RUN apt-get install -y nodejs
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm i 10" ]
-RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm alias default 10" ]
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm i 12" ]
+RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm alias default 12" ]
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update && apt-get -y --no-install-recommends install yarn
@@ -50,13 +50,13 @@ RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add 
 # helm:
 RUN curl -sL https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
 # terraform:
-RUN wget -q https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip && \
-    unzip -d /usr/local/bin/ terraform_0.11.8_linux_amd64.zip && \
-    rm terraform_0.11.8_linux_amd64.zip
+RUN wget -q https://releases.hashicorp.com/terraform/0.12.6/terraform_0.12.6_linux_amd64.zip && \
+    unzip -d /usr/local/bin/ terraform_0.12.6_linux_amd64.zip && \
+    rm terraform_0.12.6_linux_amd64.zip
 # agent:
-RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.141.0/vsts-agent-linux-x64-2.141.0.tar.gz && \
-    tar xzf /agent/vsts-agent-linux-x64-2.141.0.tar.gz && \
-    rm /agent/vsts-agent-linux-x64-2.141.0.tar.gz
+RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.154.3/vsts-agent-linux-x64-2.154.3.tar.gz && \
+    tar xzf /agent/vsts-agent-linux-x64-2.154.3.tar.gz && \
+    rm /agent/vsts-agent-linux-x64-2.154.3.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
 RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh && \
     chown agentuser:agentuser configureAgent.sh runAgent.sh configureAndRun.sh

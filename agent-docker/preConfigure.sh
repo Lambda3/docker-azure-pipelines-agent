@@ -2,15 +2,17 @@
 
 set -eo pipefail
 
-if ! docker info | grep 'Docker for Windows' > /dev/null; then
-  DOCKER_INTERNAL_HOST="host.docker.internal"
-  if ! grep $DOCKER_INTERNAL_HOST /etc/hosts > /dev/null; then
-    DOCKER_INTERNAL_IP=`/sbin/ip route | awk '/default/ { print $3 }' | awk '!seen[$0]++'`
-    echo -e "$DOCKER_INTERNAL_IP\t$DOCKER_INTERNAL_HOST" | sudo tee --append /etc/hosts > /dev/null
-    echo "Added $DOCKER_INTERNAL_IP to /etc/hosts as $DOCKER_INTERNAL_HOST"
+if ! docker info | grep 'Docker Desktop' > /dev/null; then
+  if ! getent hosts host.docker.internal > /dev/null; then
+    DOCKER_INTERNAL_HOST="host.docker.internal"
+    if ! grep $DOCKER_INTERNAL_HOST /etc/hosts > /dev/null; then
+      DOCKER_INTERNAL_IP=`/sbin/ip route | awk '/default/ { print $3 }' | awk '!seen[$0]++'`
+      echo -e "$DOCKER_INTERNAL_IP\t$DOCKER_INTERNAL_HOST" | sudo tee --append /etc/hosts > /dev/null
+      echo "Added $DOCKER_INTERNAL_IP to /etc/hosts as $DOCKER_INTERNAL_HOST"
+    fi
   fi
 fi
-sudo chown agentuser:agentuser /var/run/docker.sock
+sudo chgrp docker /var/run/docker.sock
 if [ ! -f $HOME/.docker/config.json ] && [ ! -z $DOCKER_USERNAME ] && [ ! -z $DOCKER_PASSWORD ]; then
   if [ -z $DOCKER_SERVER ]; then
     echo 'Login in to docker.com'
