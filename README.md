@@ -10,8 +10,8 @@ It will not work with Azure DevOps Server.
 
 ## Supported tags
 
-- [`latest` (*agent/Dockerfile*)](https://github.com/lambda3/docker-azure-pipelines-agent/blob/master/agent/Dockerfile)
-- [`docker` (*agent-docker/Dockerfile*)](https://github.com/lambda3/docker-azure-pipelines-agent/blob/master/agent-docker/Dockerfile)
+* [`latest` (*agent/Dockerfile*)](https://github.com/lambda3/docker-azure-pipelines-agent/blob/master/agent/Dockerfile)
+* [`docker` (*agent-docker/Dockerfile*)](https://github.com/lambda3/docker-azure-pipelines-agent/blob/master/agent-docker/Dockerfile)
 
 ## Configuration
 
@@ -68,6 +68,53 @@ This will keep the agent staging directory (and other work directories)
 persistent across agent restarts. Also, it is recommended that you mount to a
 directory that is relative to this directory, like the staging directory, so
 when it is mounted on the host, it is also available for the agent.
+
+## Software installed
+
+Based on the latest LTS Ubuntu image, with the following added packages:
+
+* apt-transport-https
+* build-essential
+* curl
+* gdebi-core
+* git
+* iproute2
+* iputils-ping
+* libicu60
+* libssl-dev
+* libunwind8
+* libuuid1
+* python
+* python-pip
+* python3
+* python3-pip
+* software-properties-common
+* sudo
+* unzip
+* vim
+* wget
+* zip
+
+Plus:
+
+* .NET Core (current and latest LTS)
+* Azure CLI
+* PowerShell Core (pwsh - latest stable)
+* Node (latest LTS) and nvm, Npm and Yarn
+* Google Chrome
+* kubectl
+* Helm CLI
+* Terraform CLI
+* Openjdk (latest LTS)
+
+Plus, on the Docker image:
+
+* Docker CLI
+* docker-compose
+
+See the
+[Dockerfile](https://github.com/lambda3/docker-azure-pipelines-agent/blob/master/agent/Dockerfile)
+for more information.
 
 ## Maintainers
 

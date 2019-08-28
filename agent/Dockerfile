@@ -53,10 +53,14 @@ RUN curl -sL https://raw.githubusercontent.com/helm/helm/master/scripts/get | ba
 RUN wget -q https://releases.hashicorp.com/terraform/0.12.6/terraform_0.12.6_linux_amd64.zip && \
     unzip -d /usr/local/bin/ terraform_0.12.6_linux_amd64.zip && \
     rm terraform_0.12.6_linux_amd64.zip
+# openjdk
+RUN apt-get install -y default-jdk
+# cleanup
+RUN apt-get autoremove -y
 # agent:
-RUN curl -sOSL https://vstsagentpackage.azureedge.net/agent/2.154.3/vsts-agent-linux-x64-2.154.3.tar.gz && \
-    tar xzf /agent/vsts-agent-linux-x64-2.154.3.tar.gz && \
-    rm /agent/vsts-agent-linux-x64-2.154.3.tar.gz
+RUN curl -sSL https://vstsagentpackage.azureedge.net/agent/2.155.1/vsts-agent-linux-x64-2.155.1.tar.gz -o /agent/vsts-agent.tar.gz && \
+    tar xzf /agent/vsts-agent.tar.gz && \
+    rm /agent/vsts-agent.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
 RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh && \
     chown agentuser:agentuser configureAgent.sh runAgent.sh configureAndRun.sh
