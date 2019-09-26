@@ -19,7 +19,7 @@ RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsof
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb
 # netcore
-RUN apt-get update && apt-get install -y dotnet-sdk-2.1 dotnet-sdk-2.2
+RUN apt-get update && apt-get install -y dotnet-sdk-2.1 dotnet-sdk-2.2 dotnet-sdk-3.0
 ENV PATH="${PATH}:/home/agentuser/.dotnet/tools"
 # az cli:
 RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
@@ -50,15 +50,15 @@ RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add 
 # helm:
 RUN curl -sL https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
 # terraform:
-RUN wget -q https://releases.hashicorp.com/terraform/0.12.6/terraform_0.12.6_linux_amd64.zip && \
-    unzip -d /usr/local/bin/ terraform_0.12.6_linux_amd64.zip && \
-    rm terraform_0.12.6_linux_amd64.zip
+RUN wget -q https://releases.hashicorp.com/terraform/0.12.9/terraform_0.12.9_linux_amd64.zip -O terraform.zip && \
+    unzip -d /usr/local/bin/ terraform.zip && \
+    rm terraform.zip
 # openjdk
 RUN apt-get install -y default-jdk
 # cleanup
 RUN apt-get autoremove -y
 # agent:
-RUN curl -sSL https://vstsagentpackage.azureedge.net/agent/2.155.1/vsts-agent-linux-x64-2.155.1.tar.gz -o /agent/vsts-agent.tar.gz && \
+RUN curl -sSL https://vstsagentpackage.azureedge.net/agent/2.158.0/vsts-agent-linux-x64-2.158.0.tar.gz -o /agent/vsts-agent.tar.gz && \
     tar xzf /agent/vsts-agent.tar.gz && \
     rm /agent/vsts-agent.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
