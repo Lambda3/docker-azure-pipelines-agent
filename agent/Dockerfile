@@ -55,6 +55,11 @@ RUN wget -q https://releases.hashicorp.com/terraform/0.12.9/terraform_0.12.9_lin
     rm terraform.zip
 # openjdk
 RUN apt-get install -y default-jdk
+# mssql-cli
+# todo move to apt when https://github.com/dbcli/mssql-cli/issues/257 is fixed
+RUN wget -q https://packages.microsoft.com/ubuntu/14.04/prod/pool/main/m/mssql-cli/mssql-cli_0.15.0-1_all.deb -O mssql-cli.deb && \
+    dpkg -i mssql-cli.deb && \
+    rm mssql-cli.deb
 # cleanup
 RUN apt-get autoremove -y
 # agent:
