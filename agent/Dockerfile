@@ -60,6 +60,11 @@ RUN apt-get install -y default-jdk
 RUN wget -q https://packages.microsoft.com/ubuntu/14.04/prod/pool/main/m/mssql-cli/mssql-cli_0.15.0-1_all.deb -O mssql-cli.deb && \
     dpkg -i mssql-cli.deb && \
     rm mssql-cli.deb
+# sqlcmd
+RUN ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev locales && \
+    locale-gen en_US.UTF-8 && \
+    update-locale LANG=en_US.UTF-8
+ENV PATH="${PATH}:/opt/mssql-tools/bin/"
 # cleanup
 RUN apt-get autoremove -y
 # agent:
