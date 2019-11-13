@@ -58,7 +58,7 @@ RUN apt-get install -y default-jdk
 # cleanup
 RUN apt-get autoremove -y
 # agent:
-RUN curl -sSL https://vstsagentpackage.azureedge.net/agent/2.158.0/vsts-agent-linux-x64-2.158.0.tar.gz -o /agent/vsts-agent.tar.gz && \
+RUN curl -sSL https://vstsagentpackage.azureedge.net/agent/2.160.0/vsts-agent-linux-x64-2.160.0.tar.gz -o /agent/vsts-agent.tar.gz && \
     tar xzf /agent/vsts-agent.tar.gz && \
     rm /agent/vsts-agent.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
