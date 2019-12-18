@@ -19,7 +19,7 @@ RUN wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsof
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb
 # netcore
-RUN apt-get update && apt-get install -y dotnet-sdk-2.1 dotnet-sdk-2.2 dotnet-sdk-3.0
+RUN apt-get update && apt-get install -y dotnet-sdk-2.1 dotnet-sdk-2.2 dotnet-sdk-3.0 dotnet-sdk-3.1
 ENV PATH="${PATH}:/home/agentuser/.dotnet/tools"
 # az cli:
 RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
@@ -32,9 +32,9 @@ RUN apt-get install -y powershell
 # nvm/node/yarn:
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash
 RUN apt-get install -y nodejs
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm i 12" ]
-RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm alias default 12" ]
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
+RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm i 12 && nvm i 13" ]
+RUN [ "/bin/bash", "-c", "source $HOME/.nvm/nvm.sh && nvm alias default 13" ]
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update && apt-get -y --no-install-recommends install yarn
@@ -47,17 +47,20 @@ RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add 
     echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
     apt-get update && \
     apt-get install -y kubectl
-# helm:
-RUN curl -sL https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash
+# helm 2:
+RUN curl -sL https://raw.githubusercontent.com/helm/helm/master/scripts/get | bash && \
+    mv /usr/local/bin/helm /usr/local/bin/helm2
+# helm 3:
+RUN curl -sL https://github.com/helm/helm/raw/master/scripts/get-helm-3 | bash
 # terraform:
-RUN wget -q https://releases.hashicorp.com/terraform/0.12.9/terraform_0.12.9_linux_amd64.zip -O terraform.zip && \
+RUN wget -q https://releases.hashicorp.com/terraform/0.12.18/terraform_0.12.18_linux_amd64.zip -O terraform.zip && \
     unzip -d /usr/local/bin/ terraform.zip && \
     rm terraform.zip
 # openjdk
 RUN apt-get install -y default-jdk
 # mssql-cli
 # todo move to apt when https://github.com/dbcli/mssql-cli/issues/257 is fixed
-RUN wget -q https://packages.microsoft.com/ubuntu/14.04/prod/pool/main/m/mssql-cli/mssql-cli_0.15.0-1_all.deb -O mssql-cli.deb && \
+RUN wget -q https://packages.microsoft.com/ubuntu/17.10/prod/pool/main/m/mssql-cli/mssql-cli_0.15.0-1_all.deb -O mssql-cli.deb && \
     dpkg -i mssql-cli.deb && \
     rm mssql-cli.deb
 # sqlcmd
@@ -68,7 +71,7 @@ ENV PATH="${PATH}:/opt/mssql-tools/bin/"
 # cleanup
 RUN apt-get autoremove -y
 # agent:
-RUN curl -sSL https://vstsagentpackage.azureedge.net/agent/2.160.0/vsts-agent-linux-x64-2.160.0.tar.gz -o /agent/vsts-agent.tar.gz && \
+RUN curl -sSL https://vstsagentpackage.azureedge.net/agent/2.163.1/vsts-agent-linux-x64-2.163.1.tar.gz -o /agent/vsts-agent.tar.gz && \
     tar xzf /agent/vsts-agent.tar.gz && \
     rm /agent/vsts-agent.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/
