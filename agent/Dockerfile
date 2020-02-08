@@ -86,4 +86,5 @@ RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh && \
     chown agentuser:agentuser configureAgent.sh runAgent.sh configureAndRun.sh
 RUN chown -R agentuser:agentuser /agent
 USER agentuser
+STOPSIGNAL SIGINT
 CMD [ "/agent/configureAndRun.sh" ]
