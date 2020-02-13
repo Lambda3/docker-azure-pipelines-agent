@@ -12,7 +12,6 @@ if ! docker info | grep 'Docker Desktop' > /dev/null; then
     fi
   fi
 fi
-sudo chgrp docker /var/run/docker.sock
 if [ ! -f $HOME/.docker/config.json ] && [ ! -z $DOCKER_USERNAME ] && [ ! -z $DOCKER_PASSWORD ]; then
   if [ -z $DOCKER_SERVER ]; then
     echo 'Login in to docker.com'
