@@ -1,5 +1,8 @@
 #!/bin/bash
 
+if [ "$DEBUG" == 'true' ]; then
+  set -x
+fi
 set -eo pipefail
 
 if ! docker info | grep 'Docker Desktop' > /dev/null; then

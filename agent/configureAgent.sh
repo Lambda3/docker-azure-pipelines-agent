@@ -1,7 +1,9 @@
 #!/bin/bash
 
+if [ "$DEBUG" == 'true' ]; then
+  set -x
+fi
 set -eo pipefail
-
 if [ -z $AGENT_POOL ]; then AGENT_POOL=Default; fi
 if [ -z $VS_TENANT ]; then
   >&2 echo 'Variable "$VS_TENANT" is not set.'
