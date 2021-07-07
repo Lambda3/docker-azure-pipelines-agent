@@ -163,11 +163,6 @@ Plus:
 * .NET Core (current and latest LTS)
 * Azure CLI
 * PowerShell Core (pwsh - latest stable)
-* Node (latest LTS) and nvm, Npm and Yarn
-* Google Chrome
-* kubectl
-* Helm CLI
-* Terraform CLI
 * Openjdk (latest LTS)
 * Docker CLI
 * docker-compose
