@@ -7,7 +7,6 @@ This project allows the Azure Pipelines Agent to run on Docker or Kubernetes
 (with Helm).
 
 [![Downloads from Docker Hub](https://img.shields.io/docker/pulls/lambda3/azure-pipelines-agent.svg)](https://registry.hub.docker.com/u/lambda3/azure-pipelines-agent)
-[![Stars on Docker Hub](https://img.shields.io/docker/stars/lambda3/azure-pipelines-agent.svg)](https://registry.hub.docker.com/u/lambda3/azure-pipelines-agent) [![](https://images.microbadger.com/badges/image/lambda3/azure-pipelines-agent.svg)](https://microbadger.com/images/lambda3/azure-pipelines-agent "Get your own image badge on microbadger.com")
 
 ## Supported tags
 
@@ -19,7 +18,7 @@ This project allows the Azure Pipelines Agent to run on Docker or Kubernetes
 For `latest`, you need to set these environment variables:
 
 * `AGENT_PAT` - The personal access token from Azure Pipelines. Required. See
-  [aka.ms/vstsagentroles](https://aka.ms/vstsagentroles) for instructions on how to create the PAT.
+  [Microsoft Docs](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/v2-linux?view=azure-devops#authenticate-with-a-personal-access-token-pat) for instructions on how to create the PAT.
 * `VS_TENANT` - The Azure Pipelines tenant, a.k.a. the value that goes before .visualstudio.com, i.e., on foo.visualstudio.com, should be `foo`. Required.
 * `AGENT_POOL` - The agent pool. Optional. Default value: `Default`
 
