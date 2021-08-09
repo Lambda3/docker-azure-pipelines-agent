@@ -7,6 +7,7 @@ This project allows the Azure Pipelines Agent to run on Docker or Kubernetes
 (with Helm).
 
 [![Downloads from Docker Hub](https://img.shields.io/docker/pulls/lambda3/azure-pipelines-agent.svg)](https://registry.hub.docker.com/u/lambda3/azure-pipelines-agent)
+[![Build](https://github.com/lambda3/docker-azure-pipelines-agent/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Lambda3/docker-azure-pipelines-agent/actions/workflows/build.yml)
 
 ## Supported tags
 
