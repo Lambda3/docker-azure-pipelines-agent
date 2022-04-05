@@ -98,4 +98,5 @@ RUN chmod +x configureAndRun.sh configureAgent.sh runAgent.sh && \
 RUN chown -R agentuser:agentuser /agent
 USER agentuser
 STOPSIGNAL SIGINT
+COPY .vimrc /home/agentuser
 CMD [ "/agent/configureAndRun.sh" ]
