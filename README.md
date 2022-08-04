@@ -12,7 +12,12 @@ This project allows the Azure Pipelines Agent to run on Docker or Kubernetes
 ## Supported tags
 
 * [`latest` (*agent/Dockerfile*)](https://github.com/lambda3/docker-azure-pipelines-agent/blob/main/agent/Dockerfile)
-* [`docker` (*agent-docker/Dockerfile*)](https://github.com/lambda3/docker-azure-pipelines-agent/blob/main/agent-docker/Dockerfile)
+
+### Other tags
+
+- For a specific git tag (tag `1.2.3` in this example): `lambda3/azure-pipelines-agent:1.2.3`
+- For a specific commit (only commits on `main` get tagged and pushed): `lambda3/azure-pipelines-agent:95aeca1`
+- For the current `main` branch: `lambda3/azure-pipelines-agent:main`
 
 ## Configuration
 
@@ -23,36 +28,7 @@ For `latest`, you need to set these environment variables:
 * `VS_TENANT` - The Azure Pipelines tenant, a.k.a. the value that goes before .visualstudio.com, i.e., on foo.visualstudio.com, should be `foo`. Required.
 * `AGENT_POOL` - The agent pool. Optional. Default value: `Default`
 
-For `docker`, you may have a predefined login using these additional variables,
-(but you should avoid it, see the disclaimer after the variables):
-
-* `DOCKER_USERNAME` - Your docker user name. Optional, no default.
-* `DOCKER_PASSWORD` - Your docker password. Optional, no default.
-* `DOCKER_SERVER` - Your docker registries, defaults to Docker's default public
-  registry. Optional.
-
-If you do not specify the Docker username and password the agent will not login.
-
-**Disclaimer**: Setting the above variables will connect the agent permanently
-to a docker registry. Instead, you should use the
-[Docker Task](https://docs.microsoft.com/azure/devops/pipelines/tasks/build/docker)
-and with a
-[Docker registry service connection](https://docs.microsoft.com/azure/devops/pipelines/library/service-endpoints#sep-docreg)
-provide the authentication. This will enable the agent to work with multiple
-registries and lower the risk of attack.
-
 ## Running
-
-### Which tag you should use
-
-* Use `latest` if you want to run the latest agent
-* Use the agent tag version, for example `2.154.3`, to run an specific
-version, but old agents will usually auto update.
-* Use `docker` if you want to the agent to use the host's Docker engine
-* Use the agent tag version plus `-docker`, for example `2.154.3-docker`, to
-run an specific version, but old agents will usually auto update.
-
-Avoid the `docker` tags, prefer to host the Docker engine on a separate host.
 
 ### Kubernetes with Helm Chart
 
@@ -94,43 +70,6 @@ This will keep the agent staging directory (and other work directories)
 persistent across agent restarts. Also, it is recommended that you mount to a
 directory that is relative to this directory, like the staging directory, so
 when it is mounted on the host, it is also available for the agent.
-
-#### With Docker support
-
-Again, this is not recommended, see the docs before to learn why. You will use
-the `docker` tag.
-
-On Linux or on a Mac (using Docker for Mac), using bash, set the variables:
-
-````bash
-export VS_TENANT=<nameofyourtenant>
-export AGENT_PAT=<yourpat>
-export DOCKER_USERNAME=<yourdockerusername>
-export DOCKER_PASSWORD=<yourdockerpassword>
-export DOCKER_SERVER=<dockerserver>
-````
-
-Then run:
-
-````bash
-docker run --name azure-pipelines-agent -ti -e VS_TENANT=$VS_TENANT -e AGENT_PAT=$AGENT_PAT -e DOCKER_USERNAME=$DOCKER_USERNAME -e DOCKER_PASSWORD=$DOCKER_PASSWORD -e DOCKER_SERVER=$DOCKER_SERVER -d --volume=/var/run/docker.sock:/var/run/docker.sock -v /agent/_works:/agent/_works lambda3/azure-pipelines-agent:docker
-````
-
-On Windows (using Docker for Windows), using PowerShell, set the variables:
-
-````powershell
-$env:VS_TENANT=<nameofyourtenant>
-$env:AGENT_PAT=<yourpat>
-$env:DOCKER_USERNAME=<yourdockerusername>
-$env:DOCKER_PASSWORD=<yourdockerpassword>
-$env:DOCKER_SERVER=<dockerserver>
-````
-
-Then run:
-
-````powershell
-docker run --name azure-pipelines-agent -ti -e VS_TENANT=$env:VS_TENANT -e AGENT_PAT=$env:AGENT_PAT -e DOCKER_USERNAME=$env:DOCKER_USERNAME -e DOCKER_PASSWORD=$env:DOCKER_PASSWORD -e DOCKER_SERVER=$env:DOCKER_SERVER -d --volume=/var/run/docker.sock:/var/run/docker.sock lambda3/azure-pipelines-agent:docker
-````
 
 ## Software installed
 

@@ -24,6 +24,8 @@ RUN wget -q https://bootstrap.pypa.io/pip/2.7/get-pip.py -O get-pip.py && \
 #users
 RUN adduser --disabled-password --gecos '' agentuser && \
     adduser agentuser sudo && \
+    groupadd -g 999 docker && \
+    usermod -a -G docker agentuser && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 # Microsoft keys:
 RUN wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb && \

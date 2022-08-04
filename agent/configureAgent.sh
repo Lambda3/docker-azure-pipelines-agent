@@ -29,3 +29,16 @@ fi
 unset AGENT_PAT
 unset AGENT_POOL
 unset VS_TENANT
+
+if ! docker info | grep 'Docker Desktop' > /dev/null; then
+  if ! getent hosts host.docker.internal > /dev/null; then
+    DOCKER_INTERNAL_HOST="host.docker.internal"
+    if ! grep $DOCKER_INTERNAL_HOST /etc/hosts > /dev/null; then
+      DOCKER_INTERNAL_IP=`/sbin/ip route | awk '/default/ { print $3 }' | awk '!seen[$0]++'`
+      echo -e "$DOCKER_INTERNAL_IP\t$DOCKER_INTERNAL_HOST" | sudo tee --append /etc/hosts > /dev/null
+      echo "Added $DOCKER_INTERNAL_IP to /etc/hosts as $DOCKER_INTERNAL_HOST"
+    fi
+  fi
+fi
+export DOCKER_VERSION=$(docker --version)
+export DOCKER_COMPOSE_VERSION=$(docker-compose --version)

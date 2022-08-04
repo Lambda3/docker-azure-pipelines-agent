@@ -3,63 +3,208 @@
 name: Publish Docker image
 
 on:
+  workflow_dispatch:
+    inputs:
+      push:
+        description: "Push to docker hub"
+        required: false
+        default: false
+        type: boolean
+      simulate_schedule:
+        description: "Simulate schedule"
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    - cron: "5 3 * * *"
   push:
     branches:
-      - main
+      - "**"
     tags:
       - "*"
-  pull_request:
-    branches:
-      - main
+    paths-ignore:
+      - "**.md"
+      - "**.txt"
+      - ".gitattribute"
+      - ".gitignore"
+
+env:
+  REPO: lambda3/azure-pipelines-agent
 
 jobs:
+  set_vars:
+    name: Set variables
+    runs-on: ubuntu-latest
+    outputs:
+      is_schedule: ${{ steps.set_outputs.outputs.is_schedule }}
+      is_workflow_dispatch: ${{ steps.set_outputs.outputs.is_workflow_dispatch }}
+    steps:
+      - name: Set outputs
+        id: set_outputs
+        run: |
+          is_schedule=${{ github.event_name == 'schedule' || !!inputs.simulate_schedule }}
+          is_workflow_dispatch=${{ github.event_name == 'workflow_dispatch' && !inputs.simulate_schedule }}
+          echo "::set-output name=is_schedule::$is_schedule"
+          echo "::set-output name=is_workflow_dispatch::$is_workflow_dispatch"
+
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
+    needs: set_vars
+    # do not run for pushes of tags and latest branch
+    if: ${{ success() && (!(github.event_name == 'push' && (github.ref == 'refs/heads/latest' || startsWith(github.ref, 'refs/tags/')))) }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+        if: ${{ needs.set_vars.outputs.is_schedule != 'true' }}
+
+      - name: Check out the latest branch
+        uses: actions/checkout@v2
+        with:
+          ref: latest
+        if: ${{ needs.set_vars.outputs.is_schedule == 'true' }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REPO }}
+          flavor: |
+            latest=false
+          tags: |
+            type=sha,prefix=,suffix=
+
+      - name: Check if update available
+        id: check
+        uses: giggio/docker-image-update-checker@v2
+        with:
+          base-image: ubuntu:20.04
+          image: ${{ steps.meta.outputs.tags }}
+          os: linux
+          verbose: true
+        if: ${{ needs.set_vars.outputs.is_schedule == 'true' }}
+
+      - name: Build image
+        working-directory: ./agent/
+        run: |
+          $ErrorActionPreference = "Stop"
+          Invoke-Expression "docker build --pull $($env:TAGS.Split("`n") | % { '-t "' + $_ + '"' }) $($env:LABELS.Split("`n") | % { '--label "' + $_ + '"' }) ."
+          if ($LASTEXITCODE -ne 0) { throw "Docker build failed." }
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+          LABELS: ${{ steps.meta.outputs.labels }}
+        if: ${{ success() && (contains(fromJson('["push", "pull_request"]'), github.event_name) || (steps.check.outputs.needs-updating == 'true' && needs.set_vars.outputs.is_schedule == 'true') || needs.set_vars.outputs.is_workflow_dispatch == 'true') }}
+
+      - name: Docker login
+        id: docker_login
+        run: |
+          $ErrorActionPreference = "Stop"
+          docker login -u lambdatres -p $env:DOCKER_PASSWORD
+          if ($LASTEXITCODE -ne 0) { throw "Docker login failed." }
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        if: ${{ success() && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (steps.check.outputs.needs-updating == 'true' && needs.set_vars.outputs.is_schedule == 'true') || (inputs.push && needs.set_vars.outputs.is_workflow_dispatch == 'true')) }}
+
+      - name: Push image
+        id: push_image
+        run: |
+          $ErrorActionPreference = "Stop"
+          $($env:TAGS.Split("`n") | % {
+            docker push $_
+            if ($LASTEXITCODE -ne 0) { throw "Docker push failed." }
+          })
+          Write-Output "::set-output name=pushed::true"
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
+        if: ${{ success() && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (steps.check.outputs.needs-updating == 'true' && needs.set_vars.outputs.is_schedule == 'true') || (inputs.push && needs.set_vars.outputs.is_workflow_dispatch == 'true')) }}
+
+      - name: Docker logout
+        run: docker logout
+        if: ${{ always() && steps.docker_login.outcome != 'skipped' }}
+
+  # scheduled: an update to latest tag because of base image update, will have ran 'push_to_registry' job:
+  push_manifest_scheduled_latest:
+    name: Push Docker manifest to Docker Hub (without year, latest tag, scheduled and with base image update)
+    runs-on: ubuntu-latest
+    needs: ["push_to_registry", "set_vars"]
+    if: ${{ success() && needs.set_vars.outputs.is_schedule == 'true' && needs.push_to_registry.outputs.pushed == 'true' }}
+    env:
+      DOCKER_CLI_EXPERIMENTAL: enabled
+    steps:
+      - name: Check out the latest branch
+        uses: actions/checkout@v2
+        with:
+          ref: latest
+
+      - name: Docker login
+        id: docker_login
+        run: |
+          $ErrorActionPreference = "Stop"
+          docker login -u lambdatres -p $env:DOCKER_PASSWORD
+          if ($LASTEXITCODE -ne 0) { throw "Docker login failed." }
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+      # example of manifests created:
+      # lambda3/azure-pipelines-agent:latest
+      # lambda3/azure-pipelines-agent:95aeca1 (sha)
+      - name: Push manifest
+        run: |
+          $sha = $(git rev-parse --short HEAD)
+          docker manifest create ${env:REPO}:latest --amend ${env:REPO}:$sha
+          docker manifest push ${env:REPO}:latest
+          docker manifest create ${env:REPO}:$sha --amend ${env:REPO}:$sha
+          docker manifest push ${env:REPO}:$sha
+
+      - name: Docker logout
+        run: docker logout
+        if: ${{ always() && steps.docker_login.outcome != 'skipped' }}
+
+  # not scheduled, without year, pushes to main and tags, might run 'push_to_registry' job (push to main) or not (push to latest and tags):
+  push_manifest_branches_and_tags_without_year:
+    name: Push Docker manifest to Docker Hub (without year, via branch and tag updates)
+    runs-on: ubuntu-latest
+    needs: ["push_to_registry", "set_vars"]
+    if: ${{ always() && needs.set_vars.outputs.is_schedule != 'true' && ((needs.push_to_registry.result == 'success' && needs.push_to_registry.outputs.pushed == 'true') || (needs.push_to_registry.result == 'skipped' && (github.event_name == 'push' && (github.ref == 'refs/heads/latest' || github.ref_type == 'tag')))) }}
+    env:
+      DOCKER_CLI_EXPERIMENTAL: enabled
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Docker login
+        id: docker_login
+        run: |
+          $ErrorActionPreference = "Stop"
+          docker login -u lambdatres -p $env:DOCKER_PASSWORD
+          if ($LASTEXITCODE -ne 0) { throw "Docker login failed." }
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract metadata (tags, labels) for Docker (Latest image)
-        id: meta_latest
-        uses: docker/metadata-action@v3
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
         with:
-          images: lambda3/azure-pipelines-agent
+          images: ${{ env.REPO }}
           flavor: |
             latest=false
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=ref,event=branch
             type=ref,event=tag
 
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: ./agent/
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta_latest.outputs.tags }}
-          labels: ${{ steps.meta_latest.outputs.labels }}
+      # example of manifests created:
+      # lambda3/azure-pipelines-agent:main
+      # lambda3/azure-pipelines-agent:latest
+      # lambda3/azure-pipelines-agent:1.2.3
+      # lambda3/azure-pipelines-agent:95aeca1 (sha)
+      - name: Push manifest
+        run: |
+          $sha = $(git rev-parse --short HEAD)
+          docker manifest create ${{ steps.meta.outputs.tags }} --amend ${env:REPO}:$sha
+          docker manifest push ${{ steps.meta.outputs.tags }}
+          docker manifest create ${env:REPO}:$sha --amend ${env:REPO}:$sha
+          docker manifest push ${env:REPO}:$sha
 
-      - name: Extract metadata (tags, labels) for Docker (Docker image)
-        id: meta_docker
-        uses: docker/metadata-action@v3
-        with:
-          images: lambda3/azure-pipelines-agent
-          flavor: |
-            latest=false
-          tags: |
-            type=raw,value=docker,enable=${{ github.ref == 'refs/heads/main' }}
-            type=ref,suffix=-docker,event=tag
-
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: ./agent-docker/
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta_docker.outputs.tags }}
-          labels: ${{ steps.meta_docker.outputs.labels }}
+      - name: Docker logout
+        run: docker logout
+        if: ${{ always() && steps.docker_login.outcome != 'skipped' }}
