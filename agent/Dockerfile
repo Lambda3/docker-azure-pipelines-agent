@@ -71,6 +71,8 @@ RUN wget -q https://releases.hashicorp.com/terraform/1.2.6/terraform_1.2.6_linux
     rm terraform.zip
 # openjdk and maven
 RUN apt-get install -y openjdk-17-jdk maven gradle
+ENV JAVA_HOME_17_X64=/usr/lib/jvm/java-17-openjdk-amd64/
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
 # mssql-cli
 # uncomment when fixed (install on Ubuntu 20.04): https://github.com/dbcli/mssql-cli/issues/482
 # RUN apt-get install -y mssql-cli
