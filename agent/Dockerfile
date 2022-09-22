@@ -30,7 +30,7 @@ RUN wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsof
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb
 # dotnet
-RUN apt-get update && apt-get install -y dotnet-sdk-3.1 dotnet-sdk-5.0 dotnet-sdk-6.0
+RUN apt-get update && apt-get install -y dotnet-sdk-3.1 dotnet-sdk-6.0
 ENV PATH="${PATH}:/home/agentuser/.dotnet/tools"
 # az cli:
 RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
@@ -41,7 +41,7 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb
 # pwsh:
 RUN apt-get install -y powershell
 # nvm/node/yarn:
-RUN curl -fSsL https://deb.nodesource.com/setup_16.x | bash
+RUN curl -fSsL https://deb.nodesource.com/setup_18.x | bash
 RUN apt-get install -y nodejs
 USER agentuser
 RUN curl -fSso- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -66,11 +66,11 @@ RUN curl -fSsL https://raw.githubusercontent.com/helm/helm/master/scripts/get | 
 # helm 3:
 RUN curl -fSsL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 # terraform:
-RUN wget -q https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip -O terraform.zip && \
+RUN wget -q https://releases.hashicorp.com/terraform/1.2.6/terraform_1.2.6_linux_amd64.zip -O terraform.zip && \
     unzip -d /usr/local/bin/ terraform.zip && \
     rm terraform.zip
-# openjdk
-RUN apt-get install -y default-jdk
+# openjdk and maven
+RUN apt-get install -y openjdk-17-jdk maven gradle
 # mssql-cli
 # uncomment when fixed (install on Ubuntu 20.04): https://github.com/dbcli/mssql-cli/issues/482
 # RUN apt-get install -y mssql-cli
@@ -89,7 +89,7 @@ RUN curl -fSsL https://github.com/docker/compose/releases/download/1.29.2/docker
 # cleanup
 RUN apt-get autoremove -y
 # agent:
-RUN curl -fSsL https://vstsagentpackage.azureedge.net/agent/2.195.1/vsts-agent-linux-x64-2.195.1.tar.gz -o /agent/vsts-agent.tar.gz && \
+RUN curl -fSsL https://vstsagentpackage.azureedge.net/agent/2.210.1/vsts-agent-linux-x64-2.210.1.tar.gz -o /agent/vsts-agent.tar.gz && \
     tar xzf /agent/vsts-agent.tar.gz && \
     rm /agent/vsts-agent.tar.gz
 COPY configureAgent.sh runAgent.sh configureAndRun.sh /agent/

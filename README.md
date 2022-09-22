@@ -11,8 +11,8 @@ This project allows the Azure Pipelines Agent to run on Docker or Kubernetes
 
 ## Supported tags
 
-* [`latest` (*agent/Dockerfile*)](https://github.com/lambda3/docker-azure-pipelines-agent/blob/master/agent/Dockerfile)
-* [`docker` (*agent-docker/Dockerfile*)](https://github.com/lambda3/docker-azure-pipelines-agent/blob/master/agent-docker/Dockerfile)
+* [`latest` (*agent/Dockerfile*)](https://github.com/lambda3/docker-azure-pipelines-agent/blob/main/agent/Dockerfile)
+* [`docker` (*agent-docker/Dockerfile*)](https://github.com/lambda3/docker-azure-pipelines-agent/blob/main/agent-docker/Dockerfile)
 
 ## Configuration
 
@@ -56,7 +56,7 @@ Avoid the `docker` tags, prefer to host the Docker engine on a separate host.
 
 ### Kubernetes with Helm Chart
 
-See [the chart readme](https://github.com/Lambda3/helmcharts/blob/master/charts/azure-pipelines-agent/README.md).
+See [the chart readme](https://github.com/Lambda3/helmcharts/blob/main/charts/azure-pipelines-agent/README.md).
 
 ### Docker
 
@@ -173,7 +173,7 @@ Plus:
 * docker-compose
 
 See the
-[Dockerfile](https://github.com/lambda3/docker-azure-pipelines-agent/blob/master/agent/Dockerfile)
+[Dockerfile](https://github.com/lambda3/docker-azure-pipelines-agent/blob/main/agent/Dockerfile)
 for more information.
 
 ## Maintainers
@@ -183,7 +183,7 @@ for more information.
 ## License
 
 This software is open source, licensed under the Apache License, Version 2.0.
-See [LICENSE.txt](https://github.com/lambda3/azure-pipelines-agent/blob/master/LICENSE.txt) for details.
+See [LICENSE.txt](https://github.com/lambda3/azure-pipelines-agent/blob/main/LICENSE.txt) for details.
 Check out the terms of the license before you contribute, fork, copy or do anything
 with the code. If you decide to contribute you agree to grant copyright of all your contribution to this project, and agree to
 mention clearly if do not agree to these terms. Your work will be licensed with the project at Apache V2, along the rest of the code.
