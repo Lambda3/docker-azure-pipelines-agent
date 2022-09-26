@@ -70,9 +70,14 @@ RUN wget -q https://releases.hashicorp.com/terraform/1.2.6/terraform_1.2.6_linux
     unzip -d /usr/local/bin/ terraform.zip && \
     rm terraform.zip
 # openjdk and maven
-RUN apt-get install -y openjdk-17-jdk maven gradle
+RUN apt-get install -y openjdk-17-jdk gradle
 ENV JAVA_HOME_17_X64=/usr/lib/jvm/java-17-openjdk-amd64/
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
+RUN curl -fSsL https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz -o maven.tgz && \
+    tar -xzvf maven.tgz && \
+    mv apache-maven-3.8.6 /opt/ && \
+    ln -s /opt/apache-maven-3.8.6/bin/mvn /usr/bin/mvn && \
+    ln -s /opt/apache-maven-3.8.6/bin/mvnDebug /usr/bin/mvnDebug
 # mssql-cli
 # uncomment when fixed (install on Ubuntu 20.04): https://github.com/dbcli/mssql-cli/issues/482
 # RUN apt-get install -y mssql-cli
